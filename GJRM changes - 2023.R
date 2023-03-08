@@ -1,4 +1,4 @@
-## PARALEL VERSION WITH OPTIONAL ITERATIVE APPROACH FOR PENALTY1. 
+## Modified gjrm() function from the GJRM package. 
 
 library(GJRM) # Version check: 0.2-3 from September 2020
 library(R.utils)
@@ -14,6 +14,8 @@ library(R.utils)
 # - beta.ML:      optional. Vector of ML estimated coefficients. Needed with LASSO.
 # - threshold:    optional. Smaller absolute coefficients will be set to zero in LASSO case.
 # - xi:           optional. Penalty strength of equalisation penalty (see above).
+# - iterative:    optional. TRUE/FALSE to indicate if estimation process should be iterative.
+#                           Necessary for LASSO-type penalty, optional for equal penalty.
 
 
 gjrm <- function (formula, data = list(), weights = NULL, subset = NULL, 
