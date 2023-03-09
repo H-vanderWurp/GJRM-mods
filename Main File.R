@@ -8,7 +8,7 @@ library(parallel)
 library(skellam)
 
 source("supporting functions.R")
-source("Football functions.R")
+#source("Football functions.R")
 source("../GJRM changes - 2023.R")
 
 ####################### Generating process #########################
