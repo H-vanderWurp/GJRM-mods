@@ -1663,7 +1663,8 @@ pen <- function (qu.mag, sp, VC, univ, l.splist, linear.equal = NULL, xi = 1e9)
   ##hv: reminder: linear.equal is assumed to have lengths nop1, number of coefficients
   ##hv: in first regression margin. Intercept included.
   if(any(linear.equal)) {
-    nop <- VC$gp1+VC$gp2+VC$gp3
+    #browser()
+    nop <- sum(c(VC$gp1, VC$gp2, VC$gp3))
     nop1 <- VC$gp1
     nop2 <- VC$gp2
     nop3 <- VC$gp3
