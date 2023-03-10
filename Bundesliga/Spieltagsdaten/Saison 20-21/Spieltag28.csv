@@ -1,0 +1,10 @@
+SeasonFrom;SeasonTo;Matchday;Day;Date;Time;Home;Guest;tipWin;tipDraw;topLose;Score90Home;Score90Guest;TabelleHome;TabelleGuest;OddsHome;OddsDraw;OddsGuest;MarktwertHome;MarktwertGuest;PreTabelleHome;PreTabelleGuest;AufsteigerHome;AufsteigerGuest;FormHome;FormGuest;tip_1X;tip_12;tip_X2
+2020;2021;28;Friday;09.04.2021;20:30;Bielefeld;Freiburg;3,2;3,3;2,25;1;0;17;10;331;330;230;52,65;130,38;17;8;1;0;4;3;1,6;1,37;1,33
+2020;2021;28;Saturday;10.04.2021;15:30;Bayern;Union;1,35;5,2;8;1;1;1;7;138;521;825;841,6;76,3;1;11;0;0;9;4;1,08;1,18;3
+2020;2021;28;Saturday;10.04.2021;15:30;Frankfurt;Wolfsburg;2,3;3,5;3;4;3;4;3;230;353;311;227,9;234,05;9;7;0;0;7;9;1,33;1,33;1,67
+2020;2021;28;Saturday;10.04.2021;15:30;Hertha;Gladbach;3,2;3,5;2,2;2;2;14;9;321;353;225;220;323,45;10;4;0;0;4;6;1,62;1,32;1,37
+2020;2021;28;Saturday;10.04.2021;15:30;Bremen;Leipzig;6,5;4,3;1,48;1;4;13;2;681;449;149;102,4;561,78;16;3;0;0;0;4;2,65;1,22;1,1
+2020;2021;28;Saturday;10.04.2021;18:30;Stuttgart;Dortmund;4;3,9;1,83;2;3;8;5;405;401;185;170,5;581,45;18;2;1;0;6;4;2;1,27;1,22
+2020;2021;28;Sunday;11.04.2021;15:30;Schalke;Augsburg;3,3;3,4;2,15;1;0;18;11;334;341;224;108,43;102,05;12;15;0;0;0;6;1,65;1,35;1,32
+2020;2021;28;Sunday;11.04.2021;18:00;Koeln;Mainz;2,9;3,3;2,4;2;3;16;15;303;328;246;107;92,85;14;13;0;0;1;7;1,52;1,37;1,4
+2020;2021;28;Monday;12.04.2021;20:30;Hoffenheim;Leverkusen;2,8;3,5;2,4;0;0;12;6;286;359;244;237,3;385,4;6;5;0;0;0;3;1,62;1,32;1,37

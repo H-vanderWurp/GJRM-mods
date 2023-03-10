@@ -1,0 +1,10 @@
+SeasonFrom;SeasonTo;Matchday;Day;Date;Time;Home;Guest;tipWin;tipDraw;topLose;Score90Home;Score90Guest;TabelleHome;TabelleGuest;OddsHome;OddsDraw;OddsGuest;MarktwertHome;MarktwertGuest;PreTabelleHome;PreTabelleGuest;AufsteigerHome;AufsteigerGuest;FormHome;FormGuest;postponed
+2019;2020;13;Friday;29.11.2019;20:30;Schalke;Union;1,7;3,7;5;2;1;5;11;167;390;522;207,9;36;14;18;0;1;7;9;0
+2019;2020;13;Saturday;30.11.2019;15:30;Hoffenheim;Duesseldorf;1,65;4;5;1;1;8;16;169;406;485;234,8;84,65;9;10;0;0;6;4;0
+2019;2020;13;Saturday;30.11.2019;15:30;Hertha;Dortmund;4,3;3,9;1,75;1;2;15;6;416;390;183;222,7;640,5;11;2;0;0;0;4;0
+2019;2020;13;Saturday;30.11.2019;15:30;Koeln;Augsburg;1,9;3,8;3,7;1;1;17;12;193;380;381;97,9;139,25;16;15;1;0;0;6;0
+2019;2020;13;Saturday;30.11.2019;15:30;Paderborn;Leipzig;7,5;5;1,37;2;3;18;2;731;546;138;27,6;544,4;17;3;1;0;1;9;0
+2019;2020;13;Saturday;30.11.2019;18:30;Bayern;Leverkusen;1,27;6;10;1;2;3;9;128;615;973;882,65;415,25;1;4;0;0;6;4;0
+2019;2020;13;Sunday;01.12.2019;15:30;Gladbach;Freiburg;1,62;4,2;5;4;2;1;4;159;437;529;270,5;135;5;13;0;0;6;5;0
+2019;2020;13;Sunday;01.12.2019;18:00;Wolfsburg;Bremen;2,2;3,6;3,1;2;3;7;14;219;366;315;233,45;171,85;6;8;0;0;3;1;0
+2019;2020;13;Monday;02.12.2019;20:30;Mainz;Frankfurt;2,9;3,7;2,3;2;1;13;10;282;367;238;152,45;216,05;12;7;0;0;3;3;0

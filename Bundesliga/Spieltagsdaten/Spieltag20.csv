@@ -1,0 +1,10 @@
+SeasonFrom;SeasonTo;Matchday;Day;Date;Time;Home;Guest;tipWin;tipDraw;topLose;Score90Home;Score90Guest;TabelleHome;TabelleGuest;OddsHome;OddsDraw;OddsGuest;MarktwertHome;MarktwertGuest;PreTabelleHome;PreTabelleGuest;AufsteigerHome;AufsteigerGuest;FormHome;FormGuest;tip_1X;tip_12;tip_X2;postponed
+2019;2020;20;Friday;31.01.2020;20:30;Hertha;Schalke;2,7;3,4;2,6;0;0;13;6;274;332;263;205,7;242,75;11;14;0;0;4;4;1,5;1,32;1,47;0
+2019;2020;20;Saturday;01.02.2020;15:30;Dortmund;Union;1,25;6,5;10;5;0;4;11;125;630;1163;640,4;43,2;2;18;0;1;6;3;1,05;1,11;3,9;0
+2019;2020;20;Saturday;01.02.2020;15:30;Hoffenheim;Leverkusen;3,3;3,7;2,1;2;1;7;5;327;376;211;236,13;438,75;9;4;0;0;6;9;1,75;1,27;1,35;0
+2019;2020;20;Saturday;01.02.2020;15:30;Duesseldorf;Frankfurt;3,3;3,7;2,1;1;1;18;9;340;370;207;85,15;216,8;10;7;0;0;3;6;1,75;1,27;1,35;0
+2019;2020;20;Saturday;01.02.2020;15:30;Mainz;Bayern;13;7;1,2;1;3;15;2;1428;745;119;146,4;915,15;12;1;0;0;0;9;4,5;1,1;1,02;0
+2019;2020;20;Saturday;01.02.2020;15:30;Augsburg;Bremen;2,1;3,8;3,2;2;1;12;16;210;371;334;132,05;180,6;15;8;0;0;0;3;1,35;1,27;1,75;0
+2019;2020;20;Saturday;01.02.2020;18:30;Leipzig;Gladbach;1,53;4,5;5,7;2;2;1;3;154;457;561;594,6;312;3;5;0;0;6;4;1,14;1,2;2,5;0
+2019;2020;20;Sunday;02.02.2020;15:30;Koeln;Freiburg;2,05;3,6;3,5;4;0;14;8;208;356;352;93,95;145,4;16;13;1;0;6;4;1,3;1,3;1,75;0
+2019;2020;20;Sunday;02.02.2020;18:00;Paderborn;Wolfsburg;3,9;3,7;1,9;2;4;17;10;386;400;186;31,05;227,95;17;6;1;0;6;0;1,9;1,27;1,25;0
