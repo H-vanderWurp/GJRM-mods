@@ -261,7 +261,7 @@ for(i in 1:29){
 sum(gains[35:68]) / 252
 sum(gains.kelly[35:68]) / 252
 
-fun20(20, eqlist = eqlistcovid, data = dat, true.count = 14, iterative = FALSE)
+#fun20(20, eqlist = eqlistcovid, data = dat, true.count = 14, iterative = FALSE)
 
 ## final model
 eqlist <- eqlist1to3
