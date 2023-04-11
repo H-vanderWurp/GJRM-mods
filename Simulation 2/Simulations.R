@@ -18,7 +18,7 @@ SingleSim(Cop = "F", theta = 2, seed = 1, n = 250, grid.l = 100, K = 10,
 ## Each call created 2 results (lappy 1:2), using a different seed of date + n + 10*clusterID
 
 erg <- lapply(1:2, function(n) SingleSim("C90", -0.2222222, 22092020 + n + 10*as.numeric(Sys.getenv("PBS_ARRAYID")), n = 250, 
-                                         grid.l = 250, K = 10, threshold = 1e-02))
+                                         grid.l = 100, K = 10, threshold = 1e-02))
 save(erg, file = paste0("C90.01.", Sys.getenv("PBS_ARRAYID"), ".Rdata"))
 
 ## To re-create everything, one would have to call the SingleSim above 100 times
