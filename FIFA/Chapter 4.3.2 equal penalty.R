@@ -12,7 +12,7 @@ source("../GJRM changes - 2023.R")
 cl <- makeCluster(10)
 clusterEvalQ(cl, source("PreScript.R"))
 clusterEvalQ(cl, source("Helpers.R"))
-clusterEvalQ(cl, source("GJRM changes.R"))
+clusterEvalQ(cl, source("../GJRM changes - 2023.R"))
 
 res1 <- parLapply(cl = cl, X = Coplist[1:9], fun = myfun.pen1)
 res1 <- do.call(rbind, res1)

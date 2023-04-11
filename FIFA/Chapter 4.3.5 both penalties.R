@@ -55,6 +55,19 @@ res3 <- myfun.pen2("indep", dat.n)
 res <- rbind(res1, res2, res3)
 stopCluster(cl)
 
+## To work with pre-calculated results.
+setwd("res_penboth")
+res.loaded <- NULL
+for(i in list.files()){
+  load(i)
+  res.here <- resG
+  res.loaded <- rbind(res.loaded, res.here)
+}
+res <- res.loaded
+setwd("..")
+
+
+
 RRPS <- rank(res$rps, ties.method = "min")
 RLLH <- rank(-res$llh, ties.method = "min")
 RCR <- rank(-res$cr, ties.method = "min")
@@ -69,11 +82,11 @@ print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 
       include.rownames = FALSE)
 
 
-fitnocarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "F", plot = TRUE,
+fitnocarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
                   grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
                   carry.start.values = FALSE, LASSO.groups = list(c(14:17)),
                   linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 6)
-fitcarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "F", plot = TRUE,
+fitcarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
                          grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
                          carry.start.values = TRUE, LASSO.groups = list(c(14:17)),
                          linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 6)
@@ -85,9 +98,9 @@ pathplot(fitcarry)
 pathplot(fitnocarry)
 dev.off()
 
-fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "PL", plot = TRUE,
+fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
                   grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
-                  carry.start.values = TRUE, LASSO.groups = list(c(14:17)),
+                  carry.start.values = FALSE, LASSO.groups = list(c(14:17)),
                   linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 1)
 summary(fit$fit.exLLH)
 

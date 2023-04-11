@@ -43,8 +43,8 @@ dat.n <- data.frame(Goals = dat$Goals, Goals.oppo = dat$Goals.oppo, m1, m2, WM =
 cl <- makeCluster(10)
 clusterEvalQ(cl, source("PreScript.R"))
 clusterEvalQ(cl, source("Helpers.R"))
-clusterEvalQ(cl, source("gjrm lasso wrapper.R"))
-clusterEvalQ(cl, source("GJRM changes.R"))
+clusterEvalQ(cl, source("../gjrm lasso wrapper.R"))
+clusterEvalQ(cl, source("../GJRM changes - 2023.R"))
 
 clusterExport(cl, list("dat.n", "eqlist"))
 
@@ -56,6 +56,19 @@ res2 <- do.call(rbind, res2)
 res3 <- myfun.pen2("indep", dat.n)
 res <- rbind(res1, res2, res3)
 stopCluster(cl)
+
+## To work with pre-calculated results.
+setwd("res_pen2")
+res.loaded <- NULL
+for(i in list.files()){
+  load(i)
+  res.here <- resG
+  res.loaded <- rbind(res.loaded, res.here)
+}
+res <- res.loaded
+setwd("..")
+
+
 
 RRPS <- rank(res$rps, ties.method = "min")
 RLLH <- rank(-res$llh, ties.method = "min")
@@ -70,8 +83,18 @@ resn <- resn[order(resn$Rges),]
 print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
+## To work with pre-calculated results:
+setwd("res_pen2")
+res.loaded <- NULL
+for(i in list.files()){
+  load(i)
+  res.here <- resG
+  res.loaded <- rbind(res.loaded, res.here)
+}
+setwd("..")
 
-fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "PL", plot = TRUE,
+
+fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "F", plot = TRUE,
                   grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
                   carry.start.values = FALSE, LASSO.groups = list(c(14:17)))
 summary(fit$fit.exLLH)
