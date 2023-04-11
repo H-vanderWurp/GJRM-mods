@@ -97,7 +97,7 @@ plotcop <- function(Cop, theta, n) {
 ## theta  - True theta (cop paramter) to sample from
 ##  n     - sample size
 
-Hendrik <- function(Cop, beta, theta, mar=c("pois","pois"), n, 
+SingleSim <- function(Cop, beta, theta, mar=c("pois","pois"), n, 
                     seed=sample(2^31,1)) {
   require(GJRM)
   require(copula)
@@ -137,7 +137,7 @@ Hendrik <- function(Cop, beta, theta, mar=c("pois","pois"), n,
 
 DoSim <- function(trueCopula, truebeta, truetheta, n, times) {
   ## generate data for n=500 and fit the model. Repeat 100 times with same parameters.
-  Sim100 <- replicate(times, Hendrik(trueCopula, beta=truebeta, n=n, theta=truetheta))
+  Sim100 <- replicate(times, SingleSim(trueCopula, beta=truebeta, n=n, theta=truetheta))
   ## Number of copulas in comparison: 6
   zw <- unlist(Sim100[2,])
   SimAICs <- matrix(zw, byrow=TRUE, ncol=length(zw)/times)

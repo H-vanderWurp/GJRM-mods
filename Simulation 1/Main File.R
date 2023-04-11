@@ -17,7 +17,7 @@ source("../GJRM changes - 2023.R")
 ##examples: 
 V <- gen(Cop="C", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n = 50000, theta=1,
          seed=sample(2^31,1))
-Hendrik("N", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n=500, theta=0)
+SingleSim("N", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n=500, theta=0)
 DoSim("C90", truebeta=list(runif(4,-1,1),runif(4,-1,1)), -5, 250, 10)
 
 ## with example from above:
@@ -33,7 +33,7 @@ A <- DoAllSims(250, times=100, tau=0.1, truebeta = list(c(0.5, 0.2, -0.2, 0), c(
 save(A, file = "Chap2_Sim_erg_01.rData")
 
 ## Table 2.1
-A$AICpicks
+A$AICpicks[c(1:3,5,4), c(1:4, 7, 5, 6)]
 ## Figure 2.1
 pdf("Pen1Sim01.pdf", width = 8, height = 4)
 ggplot(A$MSEErg, aes(x=true, y=MSE, fill=fit)) + geom_boxplot() + scale_fill_grey(start = 0.3, end = 0.95)
@@ -43,13 +43,15 @@ set.seed(1904)
 A <- DoAllSims(250, times=100, tau=0.7, truebeta = list(c(0.5, 0.2, -0.2, 0), c(0.2, -0.1, 0.1, 0.5)))
 save(A, file = "Chap2_Sim_erg_07.rData")
 ## Table 2.2
-A$AICpicks
+A$AICpicks[c(1:3,5,4), c(1:4, 7, 5, 6)]
 ## Figure 2.2
 pdf("Pen1Sim07.pdf", width = 8, height = 4)
 ggplot(A$MSEErg, aes(x=true, y=MSE, fill=fit)) + geom_boxplot() + scale_fill_grey(start = 0.3, end = 0.95)
 dev.off()
 
+set.seed(1904)
 A <- DoAllSims(250, times=100, tau= -0.6, truebeta = list(c(0.5, 0.2, -0.2, 0), c(0.2, -0.1, 0.1, 0.5)))
+save(A, file = "Chap2_Sim_erg_m06.rData")
 ## Figure 2.3
 pdf("Pen1Sim-06.pdf", width = 8, height = 4)
 ggplot(A$MSEErg, aes(x=true, y=MSE, fill=fit)) + geom_boxplot() + scale_fill_grey(start = 0.3, end = 0.95)
@@ -101,11 +103,12 @@ for (i in (1:3)) {
   A <- rbind(A, Sim2(Cops2[i], theta=kend2[tau2w[i]], times=100, n=250, truebeta = c(0.25, 0.2, -0.35, 0)))
 }
 
-save(A, file="ErgSimEqual_31052019.rdata")
+save(A, file="ErgSimEqual_09032023.rdata")
 
-pdf("./Paper/Figures/SimMarravsMe.pdf", width = 6, height = 4.5)
+pdf("SimMarravsMe.pdf", width = 8, height = 4)
 ggplot(A, aes(x=true.and.fit, y=MSE, fill=version)) + geom_boxplot() + 
-  geom_vline(xintercept = 5.5, linetype = 2) + ggtitle(bquote(paste(tau," = \u00B1", 0.25)))
+  geom_vline(xintercept = 5.5, linetype = 2) + #ggtitle(bquote(paste(tau," = \u00B1", 0.25))) +
+  scale_fill_grey(start = 0.5, end = 0.95)
 dev.off()
 
 
