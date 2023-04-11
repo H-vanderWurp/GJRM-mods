@@ -210,7 +210,7 @@ myfun.pen2 <- function(Cop, dat){
     }
     else
       fitcop <- gjrm.lasso(data = list(train, eqlist), Cop = Cop, plot = TRUE,
-                           grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
+                           grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
                            carry.start.values = FALSE, LASSO.groups = list(c(14:17)))
     if(WM == 2018){
       if(Cop == "indep"){
@@ -247,6 +247,7 @@ myfun.pen2 <- function(Cop, dat){
   }
   resG <- as.data.frame(t(apply(resG, 2, mean, na.rm = TRUE)))
   resG$Cop <- Cop
+  save(resG, file = paste0("res_pen2_", Cop, ".rData"))
   return(resG)
 }
 
@@ -373,6 +374,7 @@ myfun.penboth <- function(Cop, dat){
   resG <- as.data.frame(t(apply(resG, 2, mean, na.rm = TRUE)))
   resG$Cop <- Cop
   return(resG)
+
 }
 
 
