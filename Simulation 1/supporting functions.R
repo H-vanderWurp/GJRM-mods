@@ -82,9 +82,23 @@ plotcop <- function(Cop, theta, n) {
   a <- rMvdc(n, myMVDC)
   plot(jitter(a))
 }
-#plotcop("C", -1.5, 3000)
-## abc: Weird shit with Clayton and negative theta (its [-1, \inf)])
 
+
+## Helping function to store warnings regarding convergence. Taken from
+## stackoverflow https://stackoverflow.com/questions/4948361/how-do-i-save-warnings-and-errors-as-output-from-a-function
+
+myTryCatch <- function(expr) {
+  warn <- err <- NULL
+  value <- withCallingHandlers(
+    tryCatch(expr, error=function(e) {
+      err <<- e
+      NULL
+    }), warning=function(w) {
+      warn <<- w
+      invokeRestart("muffleWarning")
+    })
+  list(value=value, warning=warn, error=err)
+}
 
 
 #################### simulation ############################
@@ -102,7 +116,6 @@ SingleSim <- function(Cop, beta, theta, mar=c("pois","pois"), n,
   require(GJRM)
   require(copula)
   require(trustOptim)
-  
   p1 <- length(beta[[1]])-1
   p2 <- length(beta[[2]])-1
   
@@ -117,10 +130,15 @@ SingleSim <- function(Cop, beta, theta, mar=c("pois","pois"), n,
   eq_list <- list(as.formula(eq1),as.formula(eq2))
   Cops <- c("N","F","G0","C0", "C90","J0")
   gjrmwrapper <- function(Copu) {
-    return(gjrm(margins=c("PO","PO"), formula=eq_list, data=V, Model="B", gamlssfit=FALSE,
-                BivD=Copu))
+    return(myTryCatch(gjrm(margins=c("PO","PO"), formula=eq_list, data=V, Model="B", gamlssfit=FALSE,
+                BivD=Copu)))
   }
-  models <- lapply(as.list(Cops), gjrmwrapper)
+  zw <- lapply(as.list(Cops), gjrmwrapper)
+  models <- lapply(1:6, function(i) zw[[i]]$value)
+  ## warnings, new april 2023
+  warns <- lapply(1:6, function(i) zw[[i]]$warning)
+  warns <- !unlist(lapply(warns, is.null))
+  warns <- Cops[warns]
   aics <- lapply(models, FUN=stats::AIC)
   aicsglm <- AIC(fit.ind1) + AIC(fit.ind2)
   coefs <- matrix(unlist(lapply(models, coefficients)), byrow=T, nrow=length(Cops))
@@ -129,7 +147,11 @@ SingleSim <- function(Cop, beta, theta, mar=c("pois","pois"), n,
   coef.gjrm <- coefs[,1:(p1+p2+2)]
   coefs.overall <- rbind(coef.indep,coef.gjrm)
   dimnames(coefs.overall)[[1]] <- c("indep", "N", "F", "G0", "C0", "C90", "J0")
-  return(list(coefs.overall, aicresult))
+  if(length(warns) > 0)
+    warns <- data.frame(cop = warns, theta = theta)
+  else
+    warns <- NULL
+  return(list(coefs.overall, aicresult, warns))
 }
 
 ## DoSim generates data (n) from chosen copula with chosen parameters and fits
@@ -149,7 +171,10 @@ DoSim <- function(trueCopula, truebeta, truetheta, n, times) {
   }
   Sim100dif <- apply(Sim100dif, c(1,3), mean)
   dimnames(Sim100dif)[[1]] <- c("indep", "N","F","G0","C0", "C90","J0")
-  return(list(MSEperfit=t(Sim100dif), aics=SimAICs))
+  ## warnings, new april 2023
+  warns <- do.call(rbind, Sim100[3,])
+  
+  return(list(MSEperfit=t(Sim100dif), aics=SimAICs, warns = warns))
 }
 
 ## function kendall calculates for given tau the corresponding thetas for 
@@ -237,7 +262,7 @@ DoAllSims <- function(n, times, tau, truebeta){
     dimnames(AICpicks)[[1]] <- c("N","F","G0","C0","J0")
   if(tau<0)
     dimnames(AICpicks)[[1]] <- c("N", "F", "C90")
-  return(list(MSEErg=MSEErg, AICpicks=AICpicks))
+  return(list(MSEErg=MSEErg, AICpicks=AICpicks, warns=zw$warns))
 }
 
 DoAllSimswrapper <- function(tau) {

@@ -18,7 +18,7 @@ source("../GJRM changes - 2023.R")
 V <- gen(Cop="C", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n = 50000, theta=1,
          seed=sample(2^31,1))
 SingleSim("N", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n=500, theta=0)
-DoSim("C90", truebeta=list(runif(4,-1,1),runif(4,-1,1)), -5, 250, 10)
+DoSim("N", truebeta=list(runif(4,-1,1),runif(4,-1,1)), truetheta = -0.5, 250, 10)
 
 ## with example from above:
 V <- gen(Cop="G", beta=list(c(0.25,0.15, -0.2), c(-0.1, 0, 0.1)), n = 50000, theta=1.5,
