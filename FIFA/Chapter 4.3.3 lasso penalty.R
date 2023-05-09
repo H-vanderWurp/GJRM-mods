@@ -83,16 +83,6 @@ resn <- resn[order(resn$Rges),]
 print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
-## To work with pre-calculated results:
-setwd("res_pen2")
-res.loaded <- NULL
-for(i in list.files()){
-  load(i)
-  res.here <- resG
-  res.loaded <- rbind(res.loaded, res.here)
-}
-setwd("..")
-
 
 fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "F", plot = TRUE,
                   grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
