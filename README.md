@@ -9,3 +9,5 @@ Each chapter or subchapter is represented by a single folder as follows:
 - CaseStudy: Application of Chapter 5. Published in van der Wurp & Groll (2023).
 
 The main file with all GJRM-changes are included in "GJRM changes - 2023.R". Please note that the underlying GJRM-package is used in version 0.2-3, which needs to be installed from the archive: https://cran.r-project.org/src/contrib/Archive/GJRM/
+
+If any errors occur or some files are missing (which might happen, especially with the vast amount of result files), feel free to contact me via vanderwurp@statistik.tu-dortmund.de.
