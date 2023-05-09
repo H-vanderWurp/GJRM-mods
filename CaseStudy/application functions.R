@@ -32,6 +32,8 @@ rps <- function(x, d.test){
 calc.probs <- function(fit, d.test, N){
   # check for NAs, because jc.probs cant work with them.
   ind <- which(!apply(d.test, 1, function(x) any(is.na(x))))
+  if(length(ind) == 0)
+    return(res = data.frame(Home = d.test$Home, p.home = NA, p.draw = NA, p.guest = NA, Guest = d.test$Guest))
   zw <- sapply(0:N, function(n) jc.probs(fit, n, n, newdata=d.test[ind,])$p12)
   if(is.array(zw))
     prob.draw <- rowSums(zw)
