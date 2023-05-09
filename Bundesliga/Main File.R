@@ -154,6 +154,7 @@ datBU <- dat
 
 ## Note: Iterative = FALSE is definitely an option here and decreases runtime
 ## immensely. Results only slightly changed.
+## Computation can be skipped. load results.rData instead, see below save.image(). 
 
 #train <- dat[dat$SeasonFrom < 2019,]
 #test.global <- dat[dat$SeasonFrom >= 2019,]
@@ -192,7 +193,10 @@ bets2.3 <- NULL
 for(i in 1:29){
   bets2.3 <- rbind(bets2.3, res2.3[[i]]$bets.types)
 }
-save.image("results.rdata")
+#save.image("results.rData")
+
+# load("results.rData")
+
 
 ## number of bets
 sum(bets1) + sum(bets2) + sum(bets3)

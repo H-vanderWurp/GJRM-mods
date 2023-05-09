@@ -63,9 +63,13 @@ fun19 <- function(matchday, eqlist, data, true.count = 8, iterative = TRUE){
   pred <- getpred(fit, test)
   pred$probs[,2:7] <- round(pred$probs[,2:7]*100, digits = 2)
   rownames(pred$probs) <- NULL
-  #pdf(file = paste0("Probs1920_", matchday, ".pdf"), height = 4, width = 6)
-  #grid.table(pred$probs, rows = NULL)
-  #dev.off()
+  #if(matchday == 1){
+    #browser()
+    #pdf(file = paste0("Probs1920_", matchday, ".pdf"), height = 4, width = 6)
+    #grid.table(pred$probs, rows = NULL)
+    #ceiling(1/(pred$probs[,2:7]/100)*100)/100
+    #dev.off()
+  #}
   
   ## Wetten und Wettergebnisse: ## erster 19 Spieltage, nur 1,X,2
   if(matchday <= 19){
