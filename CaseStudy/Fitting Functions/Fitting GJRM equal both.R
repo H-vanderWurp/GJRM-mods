@@ -1,0 +1,101 @@
+## Fitting Cop, equal penalty
+
+exe.cop.equal.both <- function(Liga, Cop){
+  require(EUfootball)
+  Dat <- Matches
+  source("../GJRM changes - 2023.R")
+  source("application functions.R")
+  require(GJRM)
+  
+  Dat <- Dat[Dat$date < as.Date("2020-03-01"),]
+  Dat.sub <- Dat[Dat$League == Liga,]
+  
+  train <- Dat.sub[Dat.sub$SeasonFrom <= 2014,]
+  test <- Dat.sub[Dat.sub$SeasonFrom > 2014,]
+  
+  n <- dim(test)[1]
+  
+  Res <- data.frame(rps = rep(NA, n), mllh = rep(NA, n),
+                    cr = rep(NA, n), SE = rep(NA, n), AE = rep(NA, n),
+                    SeasonFrom = rep(NA, n), matchday = rep(NA, n))
+  n.bets <- 0
+  gains <- numeric(0)
+  errorcount <- 0
+  
+  repeat{
+    # indep equations
+    print(dim(test))
+    eq1 <- Goals90Home ~ eloHome + eloGuest + 
+      MVHome.T + MVGuest.T + 
+      pHome + pGuest +
+      FormGoals3Home + FormGoals3Guest +
+      PromotedHome + PromotedGuest +
+      TitleholderHome + TitleholderGuest + CupTitleholderHome + CupTitleholderGuest
+    eq2 <- Goals90Guest ~ eloGuest + eloHome + 
+      MVGuest.T + MVHome.T + 
+      pGuest + pHome +
+      FormGoals3Guest + FormGoals3Home +
+      PromotedGuest + PromotedHome +
+      TitleholderGuest + TitleholderHome + CupTitleholderGuest + CupTitleholderHome
+    eq3 <- ~ 1
+    
+    ## fit:
+    a <- try(fitcop <- gjrm(formula = list(eq1, eq2, eq3), data = train,
+                   BivD = Cop, margins = c("PO", "PO"), Model = "B",
+                   linear.equal = c(FALSE, rep(TRUE, 14)), conv.crit = 0.01),
+             silent = TRUE)
+    
+    ## predict:
+    md <- test$matchday[1]
+    year <- test$SeasonFrom[1]
+    ind <- test$matchday == md & test$SeasonFrom == year
+    testhere <- test[ind,]
+    if(class(a)[1] == "try-error"){
+      errorcount <- errorcount + 1
+      print(errorcount)
+      n.here <- dim(testhere)[1]
+      index1 <- n-(dim(test)[1])+1  # Index on where to write the results
+      index2 <- index1+n.here-1
+      Res$rps[index1:index2] <- NA
+      Res$mllh[index1:index2] <- NA
+      Res$cr[index1:index2] <- NA
+      Res$SE[index1:index2] <- NA
+      Res$AE[index1:index2] <- NA
+      Res$SeasonFrom[index1:index2] <- year
+      Res$matchday[index1:index2] <- md
+      n.bets <- n.bets + 0
+      gains <- c(gains, 0)
+    }
+    else{
+      pred <- evaluate1(type = "cop", fit1 = fitcop, newdata = testhere)
+      res <- evaluate2(pred, newdata = testhere)
+      
+      bet <- tipico(pred[[1]], testhere)
+      
+      n.here <- length(res$rps)
+      index1 <- n-(dim(test)[1])+1  # Index on where to write the results
+      index2 <- index1+n.here-1
+      Res$rps[index1:index2] <- res$rps
+      Res$mllh[index1:index2] <- res$mllh
+      Res$cr[index1:index2] <- res$cr
+      Res$SE[index1:index2] <- res$SE
+      Res$AE[index1:index2] <- res$AE
+      Res$SeasonFrom[index1:index2] <- year
+      Res$matchday[index1:index2] <- md
+      
+      n.bets <- n.bets + bet$n.bets
+      gains <- c(gains, bet$gains)
+    }
+    
+    ## current matchday to training data
+    train <- rbind(train, testhere)
+    test <- test[!ind,]
+    #rm(fitpois1, fitpois2, pred.pois, res.pois, testhere, ind, index1, index2,
+    #   year, md)
+    if(dim(test)[1] == 0)
+      break
+  }
+  Res <- list(Res = Res, n.bets = n.bets, gains = gains, errors = errorcount)
+  save(file = paste0("Results/cop_equal_both/Res_", Liga, "_", Cop, ".rData"), Res)
+}
+
