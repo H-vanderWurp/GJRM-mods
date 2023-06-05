@@ -31,7 +31,8 @@ Rges <- RRPS + RLLH + RCR + RMSE + Rgains
 resn <- cbind(res, RRPS, RLLH, RCR, RMSE,  Rgains, Rges)
 resn <- resn[order(resn$Rges),]
 
-print(xtable(resn[,c(7,1:6, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0)), 
+## Table 4.4
+print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
 ####################################################################################
@@ -51,5 +52,5 @@ print(xtable(resn[,c(7,1:6, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 
 fit <- gjrm(formula = eqlist, data = dat, Model = "B", margins = c("PO", "PO"),
             linear.equal = rep(TRUE, 22), xi = 1e9, BivD = "PL")
 summary(fit)
+## Table 4.5
 xtable(round(cbind(coef(fit)[1:22], coef(fit)[23:44]), digits = 3), digits = 3)
-xtable(round(cbind(fit$fit$stan.coef[1:22], fit$fit$stan.coef[23:44]), digits = 3), digits = 3)

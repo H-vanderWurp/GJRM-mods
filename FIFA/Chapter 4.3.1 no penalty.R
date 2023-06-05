@@ -7,6 +7,14 @@ library(xtable)
 source("PreScript.R")
 source("Helpers.R")
 
+## Figure 4.1
+fitcop <- gjrm(formula = eqlist, data = dat, BivD = "N", margins = c("PO", "PO"), 
+        Model = "B")
+#pdf("../../Figures/Diagcheck.pdf", height = 5, width = 6)
+post.check(fitcop, main = "Residuals in margin 1", main2 = "Residuals in margin 2")
+#dev.off()
+
+
 cl <- makeCluster(10)
 clusterEvalQ(cl, source("PreScript.R"))
 clusterEvalQ(cl, source("Helpers.R"))
@@ -32,6 +40,7 @@ Rges <- RRPS + RLLH + RCR + RMSE + Rgains
 resn <- cbind(res, RRPS, RLLH, RCR, RMSE,  Rgains, Rges)
 resn <- resn[order(resn$Rges),]
 
+## Table 4.2
 print(xtable(resn[,c(7,1:6, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
@@ -49,13 +58,17 @@ eq2 <- Goals.oppo ~ CL.players.oppo + UEFA.players.oppo + Nation.Coach.oppo + Ag
 eq3 <- ~ 1
 eqlist <- list(eq1, eq2, eq3)
 
+fitJ90 <- gjrm(eqlist, data = dat, BivD = "J90", margins = c("PO", "PO"), Model = "biv")
+## For Table 4.12:
+print(xtable(cbind(coef(fitJ90)[1:22], coef(fitJ90)[23:44]), digits = 3))
 
 fit <- gjrm(eqlist, data = dat, BivD = "F", margins = c("PO", "PO"), Model = "biv")
 summary(fit)
 
-## Figure 4.1
+## Figure 4.1, this time with F
 post.check(fit)
 
+## Table 4.3
 print(xtable(cbind(coef(fit)[1:22], coef(fit)[23:44]), digits = 3))
 
 ## empiric correlation

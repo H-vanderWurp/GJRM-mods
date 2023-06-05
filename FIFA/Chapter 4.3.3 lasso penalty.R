@@ -39,7 +39,8 @@ eqlist <- list(eq1, eq2, eq3)
 dat.n <- data.frame(Goals = dat$Goals, Goals.oppo = dat$Goals.oppo, m1, m2, WM = as.character(dat$WM),
                     Team = dat$Team, Opponent = dat$Opponent)
 
-
+## long(!), calculation can be skipped. Pre-calculated results loaded below.
+## 
 cl <- makeCluster(10)
 clusterEvalQ(cl, source("PreScript.R"))
 clusterEvalQ(cl, source("Helpers.R"))
@@ -80,20 +81,25 @@ Rges <- RRPS + RLLH + RCR + RMSE + Rgains
 resn <- cbind(res, RRPS, RLLH, RCR, RMSE,  Rgains, Rges)
 resn <- resn[order(resn$Rges),]
 
+## Table 4.6
 print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
 
-fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "F", plot = TRUE,
+## also long and skipable
+fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G0", plot = TRUE,
                   grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
                   carry.start.values = FALSE, LASSO.groups = list(c(14:17)))
+#save(file = "fit_433.rData", fit)
+#load("fit_433.rData")
 summary(fit$fit.exLLH)
-pdf("path1.pdf", height = 6, width = 10) ## Figure 4.2
+
+## Figure 4.2
+pdf("path1.pdf", height = 6, width = 10) 
 pathplot(fit)
 dev.off()
 
 ## Table 4.7
-
 xtable(round(cbind(coef(fit$fit.exLLH)[1:22], coef(fit$fit.exLLH)[23:44]), digits = 6), digits = 3)
 x <- round(cbind(coef(fit$fit.exLLH)[1:22], coef(fit$fit.exLLH)[23:44]), digits = 6)
 xtable(cbind(x[1:11,], rownames(x[12:22]), x[12:22,]), digits = 3)

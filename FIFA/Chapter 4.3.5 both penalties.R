@@ -39,12 +39,12 @@ eqlist <- list(eq1, eq2, eq3)
 dat.n <- data.frame(Goals = dat$Goals, Goals.oppo = dat$Goals.oppo, m1, m2, WM = as.character(dat$WM),
                     Team = dat$Team, Opponent = dat$Opponent)
 
-
+## calculations take a while and can be skipped. pre-calculated results loaded below.
 cl <- makeCluster(10)
 clusterEvalQ(cl, source("PreScript.R"))
 clusterEvalQ(cl, source("Helpers.R"))
-clusterEvalQ(cl, source("gjrm lasso wrapper.R"))
-clusterEvalQ(cl, source("GJRM changes.R"))
+clusterEvalQ(cl, source("../gjrm lasso wrapper.R"))
+clusterEvalQ(cl, source("../GJRM changes - 2023.R"))
 clusterExport(cl, list("dat.n", "eqlist"))
 
 res1 <- parLapply(cl = cl, X = Coplist[1:9], fun = myfun.penboth, dat = dat.n)
@@ -54,6 +54,8 @@ res2 <- do.call(rbind, res2)
 res3 <- myfun.pen2("indep", dat.n)
 res <- rbind(res1, res2, res3)
 stopCluster(cl)
+
+#save(file = "resboth.rdata", res)
 
 ## To work with pre-calculated results.
 setwd("res_penboth")
@@ -66,7 +68,7 @@ for(i in list.files()){
 res <- res.loaded
 setwd("..")
 
-
+## G0 winner
 
 RRPS <- rank(res$rps, ties.method = "min")
 RLLH <- rank(-res$llh, ties.method = "min")
@@ -78,15 +80,16 @@ Rges <- RRPS + RLLH + RCR + RMSE + Rgains
 resn <- cbind(res, RRPS, RLLH, RCR, RMSE,  Rgains, Rges)
 resn <- resn[order(resn$Rges),]
 
+## Table 4.8
 print(xtable(resn[,c(7,1:5, 8:13)], digits = c(0, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0)), 
       include.rownames = FALSE)
 
-
-fitnocarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
+## prep for Figure 4.3
+fitnocarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "PL", plot = TRUE,
                   grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
                   carry.start.values = FALSE, LASSO.groups = list(c(14:17)),
                   linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 6)
-fitcarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
+fitcarry <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "PL", plot = TRUE,
                          grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
                          carry.start.values = TRUE, LASSO.groups = list(c(14:17)),
                          linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 6)
@@ -98,10 +101,12 @@ pathplot(fitcarry)
 pathplot(fitnocarry)
 dev.off()
 
-fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G180", plot = TRUE,
+fit <- gjrm.lasso(data = list(dat.n, eqlist), Cop = "G0", plot = TRUE,
                   grid.l = 100, K = 10, CV = TRUE, threshold = 0.01,
                   carry.start.values = FALSE, LASSO.groups = list(c(14:17)),
                   linear.equal = rep(TRUE, 22), xi = 1e9, start.nu = 1)
+#save(file = "fit_435.rData", fit)
+#load("fit_435.rData")
 summary(fit$fit.exLLH)
 
 ## Figure 4.4
@@ -113,7 +118,3 @@ dev.off()
 ## Table 4.9
 x <- round(cbind(coef(fit$fit.exLLH)[1:22], coef(fit$fit.exLLH)[23:44]), digits = 6)
 xtable(cbind(x[1:11,], rownames(x[12:22]), x[12:22,]), digits = 3)
-
-
-
-
