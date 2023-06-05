@@ -18,6 +18,7 @@ Each chapter or subchapter is represented by a single folder as follows:
   - All results are stored in /Results/ (corresponding to "Master Fitter.R") and /Results (globally)/ (corresponding to "Master Fitter (globally).R"). Both in .zip format, unpack first.
   - /Fitting Functions/ and /Fitting Functions (globally)/ contain all necessary functions that both master fitter files need. In some cases (especially copulaLASSO and copula-fat, in which "fat" stands for both penalties at the same time (see 4.3.5)) modified versions were used for parallelisation on the department's cluster. Those versions are not published, as other parallelisation approaches will work differently.
   - "Examples_and_tables.R" creates tables for Chapter 5. 
+  - Computationally intense fits that are shown in the thesis are also stored. Three files are too big for GitHub, they are stored here: https://tu-dortmund.sciebo.de/s/kyF5MAFWfsUo29j. Add them to /CaseStudy/.
 
 The main file with all GJRM-changes are included in "GJRM changes - 2023.R". Please note that the underlying GJRM-package is used in version 0.2-3, which needs to be installed from the archive: https://cran.r-project.org/src/contrib/Archive/GJRM/
 
