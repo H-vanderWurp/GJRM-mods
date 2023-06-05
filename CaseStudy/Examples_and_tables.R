@@ -1,9 +1,21 @@
-## abc bis hier. Rest prüfen + Tabellen A.1, A.2, A.3 im Anhang
 
-## Table 5.5, simple gjrm fit
+
 library("EUfootball")
 library("GJRM")
 source("../GJRM changes - 2023.R")
+source("../gjrm lasso wrapper.R")
+
+## Figure 5.1
+pdf("boxplot.pdf", height = 6, width = 6)
+zw <- 1/Matches$oddsHome + 1/Matches$oddsDraw + 1/Matches$oddsGuest
+par(mar = c(3, 4, 2, 2))
+boxplot(zw)
+dev.off()
+
+## n for Table 5.2, # change leagues
+length(Matches$Home[Matches$date < as.Date("2020-03-01") & Matches$League == "Lig1"]) 
+
+## Table 5.5, simple gjrm fit
 Dat <- Matches
 Dat <- Dat[Dat$date < as.Date("2020-03-01"),]
 Dat.sub <- Dat[Dat$League == "BPL",]
@@ -29,19 +41,23 @@ colnames(X) <- c("beta1", "SE(beta1)", "beta2", "SE(beta2)")
 round(X, 4)  ## Table 5.5
 
 ## Table 5.6 gjrm fit with lasso penalty
-source("../../gjrm lasso wrapper.R")
+source("../gjrm lasso wrapper.R")
 ## careful, may take a while, even without CV.
 fitcop2 <- gjrm.lasso(data = list(Dat.sub, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = NULL, LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
-                      carry.start.values = TRUE, start.nu = 400, Cop = "F",
+                      carry.start.values = FALSE, start.nu = 250, Cop = "F",
                       plot = TRUE)
+# save(fitcop2, file = "fitlassoBPL.rdata")
+# load("fitlassoBPL.rdata")
 
 fitcop3 <- gjrm.lasso(data = list(Dat.sub, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
-                      carry.start.values = TRUE, start.nu = 500, Cop = "F",
+                      carry.start.values = TRUE, start.nu = 250, Cop = "F",
                       plot = TRUE)
+# save(fitcop3, file = "fitbothBPL.rdata")
+# load("fitbothBPL.rdata")
 
 X <- cbind(coef(fitcop2$fit.aic)[1:15],
            coef(fitcop2$fit.aic)[16:30], 
@@ -49,6 +65,31 @@ X <- cbind(coef(fitcop2$fit.aic)[1:15],
            coef(fitcop3$fit.aic)[16:30])
 colnames(X) <- c("beta1", "beta2", "beta1", "beta2")
 round(X, 4)  ## Table 5.6
+
+## Table 5.8
+fitcop4 <- gjrm.lasso(data = list(Dat, list(eq1,eq2,eq3)), grid.l = 100,
+                      K = 10, linear.equal = NULL, LASSO.groups = NULL, CV = FALSE,
+                      max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
+                      carry.start.values = FALSE, start.nu = 250, Cop = "F",
+                      plot = TRUE)
+# save(fitcop4, file = "fitlassoALL.rdata")
+# load("fitlassoALL.rdata")
+fitcop5 <- gjrm.lasso(data = list(Dat, list(eq1,eq2,eq3)), grid.l = 100,
+                      K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
+                      max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
+                      carry.start.values = TRUE, start.nu = 4500, Cop = "F",
+                      plot = TRUE)
+# save(fitcop5, file = "fitbothALL.rdata")
+# load("fitbothALL.rdata")
+X <- cbind(coef(fitcop4$fit.bic)[1:15],
+           coef(fitcop4$fit.bic)[16:30], 
+           coef(fitcop5$fit.bic)[1:15], 
+           coef(fitcop5$fit.bic)[16:30])
+colnames(X) <- c("beta1", "beta2", "beta1", "beta2")
+round(X, 4)  ## Table 5.8
+## kendalls tau: fitcop4BIC: 0.0301, fitcop5BIC: 0.0302
+
+
 
 datBPL <- Dat[Dat$League == "BPL",]
 datBL <- Dat[Dat$League == "BL",]
@@ -63,37 +104,50 @@ fitBPL <- gjrm.lasso(data = list(datBPL, list(eq1,eq2,eq3)), grid.l = 100,
                      max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                      carry.start.values = TRUE, start.nu = 10, Cop = "F",
                      plot = TRUE)
+# save(fitBPL, file = "fitBPL.rdata")
+# load("fitBPL.rdata")
 fitBL <- gjrm.lasso(data = list(datBL, list(eq1,eq2,eq3)), grid.l = 100,
                     K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                     max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                     carry.start.values = TRUE, start.nu = 10, Cop = "F",
                     plot = TRUE)
+# save(fitBL, file = "fitBL.rdata")
+# load("fitBL.rdata")
 fitLaLi <- gjrm.lasso(data = list(datLaLi, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                       carry.start.values = TRUE, start.nu = 10, Cop = "F",
                       plot = TRUE)
+# save(fitLaLi, file = "fitLaLi.rdata")
+# load("fitLaLi.rdata")
 fitLig1 <- gjrm.lasso(data = list(datLig1, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                       carry.start.values = TRUE, start.nu = 10, Cop = "F",
                       plot = TRUE)
+# save(fitLig1, file = "fitLig1.rdata")
+# load("fitLig1.rdata")
 fitSerA <- gjrm.lasso(data = list(datSerA, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                       carry.start.values = TRUE, start.nu = 10, Cop = "F",
                       plot = TRUE)
+# save(fitSerA, file = "fitSerA.rdata")
+# load("fitSerA.rdata")
 fitED <- gjrm.lasso(data = list(datED, list(eq1,eq2,eq3)), grid.l = 100,
                     K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                     max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                     carry.start.values = TRUE, start.nu = 10, Cop = "F",
                     plot = TRUE)
+# save(fitED, file = "fitED.rdata")
+# load("fitED.rdata")
 fitTurL <- gjrm.lasso(data = list(datTurL, list(eq1,eq2,eq3)), grid.l = 100,
                       K = 10, linear.equal = c(FALSE, rep(TRUE, 14)), LASSO.groups = NULL, CV = FALSE,
                       max.nu = NULL, threshold = 1e-03, CV.seed = 1904, xi = 1e9,
                       carry.start.values = TRUE, start.nu = 10, Cop = "F",
                       plot = TRUE)
-
+# save(fitTurL, file = "fitTurL.rdata")
+# load("fitTurL.rdata")
 
 ## Table 5.7 first part
 round(cbind(coef(fitBPL$fit.aic)[1:15], coef(fitBPL$fit.aic)[16:30],
@@ -124,11 +178,3 @@ fitSerA <- gjrm(eqlist, data = datSerA, margins = c("PO", "PO"), BivD = "FGM", M
 fitLaLi <- gjrm(eqlist, data = datLaLi, margins = c("PO", "PO"), BivD = "FGM", Model = "biv")
 fitLig1 <- gjrm(eqlist, data = datLig1, margins = c("PO", "PO"), BivD = "FGM", Model = "biv")
 fitED <- gjrm(eqlist, data = datED, margins = c("PO", "PO"), BivD = "FGM", Model = "biv")
-fitTurL <- gjrm(eqlist, data = datTurL, margins = c("PO", "PO"), BivD = "FGM", Model = "biv")
-summary(fitBPL)
-summary(fitBL)
-summary(fitSerA)
-summary(fitLaLi)
-summary(fitLig1)
-summary(fitED)
-summary(fitTurL)
