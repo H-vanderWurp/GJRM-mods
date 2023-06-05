@@ -56,11 +56,6 @@ eq2 <- Goals.oppo ~ CL.players.oppo + UEFA.players.oppo + Nation.Coach.oppo + Ag
 eq3 <- ~ 1
 eqlist <- list(eq1, eq2, eq3)
 
-#fitcop <- gjrm(formula = eqlist, data = dat, BivD = "N", margins = c("PO", "PO"), 
-       #        Model = "B")
-#pdf("../../Figures/Diagcheck.pdf", height = 5, width = 6)
-#post.check(fitcop, main = "Residuals in margin 1", main2 = "Residuals in margin 2")
-#dev.off()
 
 myfun <- function(Cop){
   resG <- data.frame(matrix(ncol = 6, nrow=5))
@@ -251,10 +246,6 @@ myfun.pen2 <- function(Cop, dat){
   return(resG)
 }
 
-#myfun.pen2("F", dat = dat.n)
-## to do: indep reparieren.
-#myfun.pen2("indep", dat)
-
 
 
 #eq1 <- Goals ~ 1 + CL.players + UEFA.players + Nation.Coach + Age.Coach + Tenure.Coach +
@@ -338,7 +329,7 @@ myfun.penboth <- function(Cop, dat){
     else
       fitcop <- gjrm.lasso(data = list(train, eqlist), Cop = Cop, plot = TRUE,
                            grid.l = 100, K = 10, CV = FALSE, threshold = 0.01,
-                           carry.start.values = TRUE, LASSO.groups = list(c(14:17)),
+                           carry.start.values = FALSE, LASSO.groups = list(c(14:17)),
                            xi = 1e9, linear.equal = rep(TRUE, 22))
     if(WM == 2018){
       if(Cop == "indep"){
@@ -373,8 +364,8 @@ myfun.penboth <- function(Cop, dat){
   }
   resG <- as.data.frame(t(apply(resG, 2, mean, na.rm = TRUE)))
   resG$Cop <- Cop
+  save(resG, file = paste0("res_penboth_", Cop, ".rData"))
   return(resG)
-
 }
 
 
