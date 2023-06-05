@@ -20,11 +20,16 @@
 ##   coefficients from last grid-step should be used. Usually is preferred
 #    to achieve better path plots. FALSE meaning the intercepts are the mean responses
 #    in their link function and all covariates' coefficients are zero.
+## - nu.grow: ratio of growth while looking for the maximum value of nu.
+##   default 0.1 (10%). Can be increased to reduce computational time.
 
 gjrm.lasso <- function(data, Cop, plot = FALSE, grid.l = 100, K = 10, linear.equal = NULL,
                        LASSO.groups = NULL, CV = FALSE, max.nu = NULL, threshold = 1e-03, 
                        CV.seed = 1904, xi = 1e9, carry.start.values = TRUE,
-                       start.nu = 0.01){
+                       start.nu = 0.01, nu.grow = 0.1){
+  if(nu.grow <= 0)
+    stop("nu.grow has to be positive")
+  nu.grow <- nu.grow + 1
   require(GJRM)
   ## ML-estimation at start
   fitML <- gjrm(data[[2]], data = data[[1]], BivD = Cop, margins = c("PO", "PO"),
@@ -67,7 +72,7 @@ gjrm.lasso <- function(data, Cop, plot = FALSE, grid.l = 100, K = 10, linear.equ
     continue <- mycheck > 3 
     #print(mycheck)
     if(continue){
-      nu <- nu * 1.1
+      nu <- nu * nu.grow
       #print(nu)
     }
   }
@@ -135,7 +140,7 @@ gjrm.lasso <- function(data, Cop, plot = FALSE, grid.l = 100, K = 10, linear.equ
     bic[which(nu == grid)] <- myBIC(fitvoll)
     aic[which(nu == grid)] <- myAIC(fitvoll)
     llh[which(nu == grid)] <- logLik(fitvoll)
-    dfs[which(nu == grid)] <- sum(fitvoll$fit$stan.coef0 != 0) - 3 #abc verallgemeinern?
+    dfs[which(nu == grid)] <- sum(fitvoll$fit$stan.coef0 != 0) - 2 - nop3       # -2 for intercepts in margins 1 and 2. 
     ## K-fold CV that uses the external likelihood
     if(CV){
       set.seed(CV.seed)

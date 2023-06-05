@@ -16,10 +16,12 @@ library(R.utils)
 # - LASSO.groups: optional. List of vectors given the number of coefficients groups
 #                 in the full coefficient vector. Each group is a vector in this list.
 # - beta.ML:      optional. Vector of ML estimated coefficients. Needed with LASSO.
+#                 note: Calculate with gjrm() with LASSO = TRUE and LASSO.nu = 0, so standardisation is active.
 # - threshold:    optional. Smaller absolute coefficients will be set to zero in LASSO case.
 # - xi:           optional. Penalty strength of equalisation penalty (see above).
 # - iterative:    optional. TRUE/FALSE to indicate if estimation process should be iterative.
 #                           Necessary for LASSO-type penalty, optional for equal penalty.
+# - iter.weights: optional. Decides, if iterative weights should be used for the equal-penalty. \omega in paper.
 
 
 gjrm <- function (formula, data = list(), weights = NULL, subset = NULL, 
@@ -33,7 +35,7 @@ gjrm <- function (formula, data = list(), weights = NULL, subset = NULL,
                   min.pr = 1e-16, max.pr = 0.999999, linear.equal = NULL,
                   start.values = NULL, LASSO = FALSE, LASSO.nu = 0, 
                   LASSO.groups = NULL, beta.ML = NULL, threshold = 1e-03,
-                  xi = 1e9, conv.crit = 0.01, iterative = TRUE) 
+                  xi = 1e9, conv.crit = 0.01, iterative = TRUE, iter.weights = TRUE) 
 {
   
   ##hv: addded: linear.equal. NULL or vector of false the length of the first
@@ -67,6 +69,10 @@ gjrm <- function (formula, data = list(), weights = NULL, subset = NULL,
     stop("LASSO requires iterative = TRUE")
   if(is.null(LASSO.nu))
     LASSO.nu <- 0
+  if(LASSO.nu > 0 & !(LASSO))
+    stop("LASSO.nu chosen with LASSO inactive. Did you forget to set LASSO = TRUE?")
+  if(LASSO & LASSO.nu > 0 & is.null(beta.ML))
+    stop("ML estimation required for LASSO")
   if (missing(margins)) 
     stop("You must choose the margins' values.")
   if (missing(Model)) 
@@ -194,7 +200,7 @@ gjrm <- function (formula, data = list(), weights = NULL, subset = NULL,
     environment(fake.formula) <- environment(formula[[1]])
     mf$formula <- fake.formula
     ##hv: add new arguments in here:
-    mf$min.dn <- mf$min.pr <- mf$LASSO <- mf$threshold <- mf$beta.ML <- mf$start.values <- mf$LASSO.nu <- mf$LASSO.groups <- mf$linear.equal <- mf$max.pr <- mf$dep.cens <- mf$ordinal <- mf$Model <- mf$knots <- mf$k1.tvc <- mf$k2.tvc <- mf$surv <- mf$BivD <- mf$margins <- mf$fp <- mf$dof <- mf$infl.fac <- mf$rinit <- mf$rmax <- mf$iterlimsp <- mf$tolsp <- mf$gc.l <- mf$parscale <- mf$extra.regI <- mf$gamlssfit <- mf$xi <- mf$conv.crit <- mf$iterative <- NULL
+    mf$min.dn <- mf$min.pr <- mf$LASSO <- mf$threshold <- mf$beta.ML <- mf$iter.weights <- mf$start.values <- mf$LASSO.nu <- mf$LASSO.groups <- mf$linear.equal <- mf$max.pr <- mf$dep.cens <- mf$ordinal <- mf$Model <- mf$knots <- mf$k1.tvc <- mf$k2.tvc <- mf$surv <- mf$BivD <- mf$margins <- mf$fp <- mf$dof <- mf$infl.fac <- mf$rinit <- mf$rmax <- mf$iterlimsp <- mf$tolsp <- mf$gc.l <- mf$parscale <- mf$extra.regI <- mf$gamlssfit <- mf$xi <- mf$conv.crit <- mf$iterative <- NULL
     ##hv: END
     mf$drop.unused.levels <- drop.unused.levels
     mf[[1]] <- as.name("model.frame")
@@ -698,7 +704,7 @@ gjrm <- function (formula, data = list(), weights = NULL, subset = NULL,
                                  qu.mag = qu.mag, linear.equal = linear.equal,
                                  LASSO = LASSO, LASSO.nu = LASSO.nu, LASSO.groups = LASSO.groups,
                                  beta.ML = beta.ML, threshold = threshold, xi = xi,
-                                 conv.crit =  conv.crit, iterative = iterative)
+                                 conv.crit =  conv.crit, iterative = iterative, iter.weights = iter.weights)
     ##hv: arguments of SemiParBIV.fit added. END
     SemiParFit.p <- copulaReg.fit.post(SemiParFit = SemiParFit, 
                                        VC = VC, GAM)
@@ -814,7 +820,7 @@ SemiParBIV.fit <- function (func.opt, start.v, rinit, rmax, iterlim, iterlimsp,
                             tolsp, respvec, VC, sp = NULL, qu.mag = NULL,
                             linear.equal = NULL, LASSO = FALSE, LASSO.nu = NULL,
                             LASSO.groups = NULL, beta.ML = NULL, threshold = 1e-03,
-                            xi = 1e9, conv.crit = 0.01, iterative = FALSE) 
+                            xi = 1e9, conv.crit = 0.01, iterative = TRUE, iter.weights = TRUE) 
 {
   l.sp1 <- VC$l.sp1
   l.sp2 <- VC$l.sp2
@@ -890,6 +896,8 @@ SemiParBIV.fit <- function (func.opt, start.v, rinit, rmax, iterlim, iterlimsp,
         pref <- c(pref, rep(0, nop1 - nop2), pref, rep(0, nop3))
       if(nop1 < nop2)
         pref <- c(pref, pref, rep(0, nop2 - nop1), rep(0, nop3))
+      if(!iter.weights)
+        pref <- 1
       ps$S.h <- pref * S.h.blank
     }
     if(LASSO & LASSO.nu > 0){
