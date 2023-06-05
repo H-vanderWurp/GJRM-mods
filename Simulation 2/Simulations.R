@@ -32,13 +32,12 @@ sapply(c(-0.75, -0.5, -0.25, -0.1, 0.1, 0.25, 0.5, 0.75), function(t) kendall(t)
 
 
 ## Single Sim for visualisation purposes:
-
-SingleSim(Cop = "N", theta = 0.1564322, seed = 19042023, n = 250, grid.l = 100, K = 10,
-          threshold = 0.01)
+#SingleSim(Cop = "N", theta = 0.1564322, seed = 19042023, n = 250, grid.l = 100, K = 10,
+#          threshold = 0.01)
 data <- genData(Cop = "N", theta = 0.1564322 , seed = 19042023, n = 250)
 fit <- gjrm.lasso(data, Cop = "N", grid.l = 100, K = 10, CV = TRUE, threshold = 0.01, plot = TRUE)
 
-pdf("../../selection_paths.pdf", height = 9, width = 6)
+#pdf("selection_paths.pdf", height = 9, width = 6)
 par(mfrow = c(4,2))
 plot(fit$grid, fit$exLLH, type = "l", xlab = expression(nu), ylab = "exLLH")
 plot(1:100, rev(fit$exLLH), type = "l", xlab = expression("Index of" ~ nu), ylab = "exLLH")
@@ -48,7 +47,7 @@ plot(fit$grid, fit$bic, type = "l", xlab = expression(nu), ylab = "BIC")
 plot(1:100, rev(fit$bic), type = "l", xlab = expression("Index of" ~ nu), ylab = "BIC")
 plot(fit$grid, fit$dfs, type = "l", xlab = expression(nu), ylab = "dfs")
 plot(1:100, rev(fit$dfs), type = "l", xlab = expression("Index of" ~ nu), ylab = "dfs")
-dev.off()
+#dev.off()
 
 ## better in ggplot:
 library(ggplot2)
@@ -63,10 +62,11 @@ ggdat <- data.frame(target = c((fit$exLLH), (fit$exLLH), (fit$aic), (fit$aic),
                     plotx = rep(c("nu", "Index~of~nu", "nu", "Index~of~nu", "nu", "Index~of~nu", "nu", "Index~of~nu"), each = 100))
 ggdat$plotx <- factor(ggdat$plotx, levels = c("nu", "Index~of~nu"))
 
-pdf("../../selection_paths.pdf", height = 7, width = 7)
+## Figure 3.7
+#pdf("selection_paths.pdf", height = 7, width = 7)
 ggplot(data = ggdat, aes(y = target, x = nu)) + geom_line() + facet_grid(ploty ~ plotx, scales = "free", switch = "both", labeller = label_parsed) +
   theme(strip.placement = "outside", strip.background = element_blank(), axis.title.y = element_blank(), axis.title.x = element_blank())
-dev.off()
+#dev.off()
 
 ## Pathplot als gg-Version
 library(gridExtra)
@@ -111,9 +111,10 @@ pathplot <- function(fit, ...){
   #text(x = which(rev(fit$grid) == fit$nus[3]) + grid.l*0.03, y = max(m)*0.9, labels = "exLLH")
 }
 
-pdf("../../path_Sim.pdf", height = 6, width = 10) ## 
+## Figure 3.8
+#pdf("path_Sim.pdf", height = 6, width = 10) ## 
 pathplot(fit)
-dev.off()
+#dev.off()
 
 
 
