@@ -1,4 +1,5 @@
 getpred <- function(fit, newdata){
+  
   ## Vorbereitungen:
   sMW <- sum(c(newdata$MarktwertHome, newdata$MarktwertGuest))
   newdata$MWHome <- newdata$MarktwertHome / sMW
@@ -40,10 +41,10 @@ getpred <- function(fit, newdata){
 
 ## Saison 2019/2020 auswerten im Wetterfolg
 ## eqlist, Auswahl aus Saisonstart oder nicht, siehe Hauptdatei.
-## data, voller Datensatz, siehe Hauptdatei.
+## dat, voller Datensatz, siehe Hauptdatei.
 
 fun19 <- function(matchday, eqlist, data, true.count = 8, iterative = TRUE){
-  
+  dat <- data
   ## Daten zum Modellierungen auswaehlen:
   train <- dat[dat$SeasonFrom < 2019,]
   train.add <- dat[dat$SeasonFrom == 2019 & dat$Matchday < matchday,]

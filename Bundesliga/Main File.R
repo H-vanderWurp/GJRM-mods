@@ -136,7 +136,6 @@ dat$pHome <- 1 / (p * dat$OddsHome)
 dat$pGuest <- 1  / (p * dat$OddsGuest)
 dat$pDraw <- 1 / (p * dat$OddsDraw)
 
-## Modell mit Splines und ohne linear.equal
 ## Kovariablen Tabelle und Form machen erst ab dem 4. Spieltag Sinn. 
 datBU <- dat
 
@@ -159,11 +158,15 @@ datBU <- dat
 #train <- dat[dat$SeasonFrom < 2019,]
 #test.global <- dat[dat$SeasonFrom >= 2019,]
 
+## Calculations can be skipped, results file provided. See below.
+
+## Tables 2.5 and 2.6
+
 res1 <- lapply(1:3, function(i) fun19(i, eqlist1to3, data = dat, true.count = 8, iterative = TRUE))
 ## pandemic from 26 onward, but learning till 29. 26-29 with averaged intercepts.
 ## included in fun19.
-res2 <- lapply(4:29, function(i) fun19(i, eqlistfull, data = dat, true.count = 12, iterative = TRUE))
-res3 <- lapply(30:34, function(i) fun19(i, eqlistcovid, data = dat, true.count = 14, iterative = TRUE))
+res2 <- lapply(4:29, function(i) {print(i); fun19(i, eqlistfull, data = dat, true.count = 12, iterative = TRUE)})
+res3 <- lapply(30:34, function(i) {print(i); fun19(i, eqlistcovid, data = dat, true.count = 14, iterative = TRUE)})
 
 bets1 <- rbind(res1[[1]]$bets.types, res1[[2]]$bets.types, res1[[3]]$bets.types)
 bets2 <- NULL
@@ -271,15 +274,18 @@ sum(gains.kelly[35:68]) / 252
 eqlist <- eqlist1to3
 fit1 <- gjrm(eqlist, data=dat, BivD = "F", Model = "B", margins = c("PO","PO"),
             linear.equal = c(FALSE, rep(TRUE, 8)), iterative = FALSE)
+## Table 2.7
 xtable(cbind(coef(fit1)[1:9], coef(fit1)[10:18],
              exp(coef(fit1)[1:9]), exp(coef(fit1)[10:18])), digits = 4)
 eqlist <- eqlistfull
 fit2 <- gjrm(eqlist, data=dat, BivD = "F", Model = "B", margins = c("PO","PO"),
              linear.equal = c(FALSE, rep(TRUE, 12)))
+## Table 2.8
 xtable(cbind(coef(fit2)[1:13], coef(fit2)[14:26],
              exp(coef(fit2)[1:13]), exp(coef(fit2)[14:26])), digits = 4)
 
 eqlist <- eqlistcovid
+## Table 2.9
 fit3 <- gjrm(eqlist, data=dat, BivD = "F", Model = "B", margins = c("PO","PO"),
              linear.equal = c(FALSE, rep(TRUE, 14)))
 xtable(cbind(coef(fit3)[1:15], coef(fit3)[16:30],
